@@ -49,5 +49,19 @@ module.exports = {
                     {message: 'Wrong e-mail or password'}
                 )
             });
+    },
+    check_token: function(req, res, next) {
+        const token = req.get('Autorization');
+        if (!token) {
+            return res.status(401).json({message: 'Token not found'});
+        }
+        jwt.verify(token, conts.keyJWT, () => 
+            (err, decoded) => {
+                if (err || !decoded) {
+                    return res.status(401).json({message: 'Wrong token. Athentication error'});
+                }
+                next();
+            }
+        )
     }
 }
